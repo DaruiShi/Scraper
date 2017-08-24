@@ -1,7 +1,7 @@
 # python StravaScraper.py
 
 import requests
-import HTMLParser
+from html.parser import HTMLParser
 
 def _attr(attrs,attrname):
 	for attr in attrs:
@@ -135,27 +135,27 @@ for url in urls:
 		memberPage=requests.get(memberUrl,cookies=cookies)
 		pagePar=PageParser()
 		pagePar.feed(memberPage.content.decode('utf-8'))
-		print "#################\n# New member No."+str(num)+"...\n#################"
+		print("#################\n# New member No."+str(num)+"...\n#################")
 		num+=1
 		pageUrls=[]
 		pageUrls.append(memberUrl)
 		pageUrls=pageUrls+pagePar.pages
-		print "\n".join(pageUrls)
+		print("\n".join(pageUrls))
 		for page in pageUrls:
 			pageUrl=page
 			monthPage=requests.get(pageUrl,cookies=cookies)
 			monthPar=MonthParser()
 			monthPar.feed(monthPage.content.decode('utf-8'))
-			print "#############\n# New page...\n#############"
-			print "\n".join(monthPar.months)
+			print("#############\n# New page...\n#############")
+			print("\n".join(monthPar.months))
 			for month in monthPar.months:
 				monthUrl="https://www.strava.com"+month
-				print monthUrl
+				print(monthUrl)
 				activPage=requests.get(monthUrl,cookies=cookies)
 				activPar=ActivityParser()
 				activPar.feed(activPage.content.decode('utf-8'))
-				print "#########\n# New stage...\n#########"
-				print "\n".join(activPar.activities)
+				print("#########\n# New stage...\n#########")
+				print("\n".join(activPar.activities))
 				for activ in activPar.activities:
 					activUrl="https://www.strava.com"+activ
 					dataPage=requests.get(activUrl,cookies=cookies)
@@ -163,8 +163,8 @@ for url in urls:
 					dataPar.feed(dataPage.content.decode('utf-8'))
 					outfile.write(','.join(dataPar.data[:5]))
 					outfile.write('\n')
-					print '    '.join(dataPar.data[:5])
-					print "#####\n# New activity...\n#####"
+					print('    '.join(dataPar.data[:5]))
+					print("#####\n# New activity...\n#####")
 				
 outfile.close()
 
