@@ -19,7 +19,7 @@ class EbayParser(HTMLParser):
 	def handle_starttag(self,tag,attrs):
 		if tag=='div' and _attr(attrs,'id')=='result-set': self.in_result=True
 		if tag=='div' and _attr(attrs,'class')=='desc' and self.in_result: self.in_desc=True
-		if tag=='a' and self.in_desc: self.EANurls.append([_attr(attrs,'href'),_attr(attrs,'title')])
+		if tag=='a' and self.in_desc: self.EANurls.append(_attr(attrs,'href'))
 	def hanndle_endtag(self,tag):
 		if tag=='span': self.in_desc=False
 		if tag=='div' and _attr(attrs,'id')=='pager': self.in_result=False
@@ -53,10 +53,10 @@ for i in range(2):
 	ebaypar=EbayParser()
 	ebaypar.feed(page.content.decode('utf-8'))
 	for EANurl in ebaypar.EANurls:
-		EANpage=requests.get(EANurl[0])
+		EANpage=requests.get(EANurl)
 		EANpar=EANParser()
 		EANpar.feed(EANpage.content.decode('utf-8'))
-		print(EANurl[1])
-		outfile.write('"'+EANurl[1]+'",'+EANpar.EAN_num+'\n')
+		print(EANurl)
+		outfile.write(EANpar.EAN_num+'\n')
 	
 outfile.close()
